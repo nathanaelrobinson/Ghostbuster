@@ -53,6 +53,8 @@ def in_circle(point):
 def kill_ghosts():
 	p1, p2, p3, p4 = campfire()
 	beam1, beam2 = lines(p1,p2,p3,p4)
+	if beam1[0] == beam2[0]:
+		return False
 	point = get_intersection1(beam1,beam2)	
 	return in_circle(point)
 	
