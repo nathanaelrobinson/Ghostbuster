@@ -67,5 +67,8 @@ def ghostbusters(iterations):
 			false_values += 1.0
 		avg = true_values/i
 		moving_average.append(avg)
+	print "World Explodes {}% of the Time".format(moving_average[-1]*100)
+	y = moving_average
+	x = np.arange(1,iterations+1)
 	return moving_average
 	
