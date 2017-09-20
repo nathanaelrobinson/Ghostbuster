@@ -1,10 +1,15 @@
 import random
 import pandas as pd
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
 import math
+from decimal import Decimal
+import matplotlib.style as style
+style.use('fivethirtyeight')
 
 def campfire():
+	# plt.figure(1)
+	# plt.plot(0,0, marker='o',color='red')
 	p1 = []
 	p2 = []
 	p3 = []
@@ -21,47 +26,97 @@ def campfire():
 	p3.append(math.sin(math.radians(DA2)))
 	p4.append(math.cos(math.radians(g2)))
 	p4.append(math.sin(math.radians(g2)))
+	# plt.plot(p1[0],p1[1], marker='o',color='red')
+	# plt.plot(p3[0],p3[1], marker='o', color='red')
+	# plt.plot(p2[0],p2[1], marker='o',color='green')
+	# plt.plot(p4[0],p4[1], marker='o', color='green')
 	return p1, p2, p3, p4
-	
+
+def campfire_discrete():
+	locations = []
+	for i in range(0,20):
+		pos = random.random()*360
+		locations.append(pos)
+	random.shuffle(locations)
+	p1 = []
+	p2 = []
+	p3 = []
+	p4 = []
+	DA1 = locations.pop()
+	g1 = locations.pop()
+	DA2 = locations.pop()
+	g2 = locations.pop()
+	p1.append(math.cos(math.radians(DA1)))
+	p1.append(math.sin(math.radians(DA1)))
+	p2.append(math.cos(math.radians(g1)))
+	p2.append(math.sin(math.radians(g1)))
+	p3.append(math.cos(math.radians(DA2)))
+	p3.append(math.sin(math.radians(DA2)))
+	p4.append(math.cos(math.radians(g2)))
+	p4.append(math.sin(math.radians(g2)))
+	# plt.plot(p1[0],p1[1], marker='o',color='green')
+	# plt.plot(p3[0],p3[1], marker='o', color='green')
+	# plt.plot(p2[0],p2[1], marker='o',color='green')
+	# plt.plot(p4[0],p4[1], marker='o', color='green')
+	return p1, p2, p3, p4
+
+def lin_equ(l1,l2):
+    #line encoded as l=(x,y)
+    m=((l2[1]-l1[1]))/ (l2[0]-l1[0])
+    c=(l2[1]-(m*l2[0]))
+    return m,c
 	
 def lines(p1, p2, p3, p4):
-	coeff1 = np.polyfit(p1, p2, 1)
-	coeff2 = np.polyfit(p3, p4, 1)
-	line1 = [coeff1[0], coeff1[1]]
-	line2 = [coeff2[0], coeff2[1]]
+	m1, c1 = lin_equ(p1,p2)
+	m2, c2 = lin_equ(p3,p4)
+	line1 = [m1, c1]
+	line2 = [m2, c2]
 	return line1, line2
 
 
+
 def get_intersection1(line1, line2):
-    """Returns the point of intersection of two lines via cross product.
-    :param line1: [slope, intercept].T of the first line.
-    :param line2: [slope, intercept].T of the second line.
-    """
-    l1=np.insert(line1, 1, -1)
-    l2=np.insert(line2, 1, -1)
-    x, y, z= np.cross(l1, l2)
-    return np.hstack([x, y]) / z
-	
+	m1 = line1[0]
+	m2 = line2[0]
+	b1 = line1[1]
+	b2 = line2[1]
+	x = (b2 - b1) / (m1 - m2)
+	y = m1 * x + b1
+	intersect = [x,y]
+	return intersect
+
 def in_circle(point):
 	if (point[0]**2 + point[1]**2) > 1:
+		# plt.plot(point[0],point[1], marker='o',color='blue')
 		return False
 	elif (point[0]**2 + point[1]**2) < 1:
+		# plt.plot(point[0],point[1], marker='o',color='red')
 		return True
 		
-def kill_ghosts():
+def world_explodes():
 	p1, p2, p3, p4 = campfire()
 	beam1, beam2 = lines(p1,p2,p3,p4)
 	if beam1[0] == beam2[0]:
 		return False
 	point = get_intersection1(beam1,beam2)	
 	return in_circle(point)
+
+def world_explodes_discrete():
+	p1, p2, p3, p4 = campfire_discrete()
+	beam1, beam2 = lines(p1,p2,p3,p4)
+	if beam1[0] == beam2[0]:
+		return False
+	point = get_intersection1(beam1,beam2)	
+	return in_circle(point)
 	
-def ghostbusters(iterations):
+def ghostbusters_continuous(iterations):
+	plt.figure(1)
 	true_values = 0
 	false_values = 0
 	moving_average = []
 	for i in range(1,iterations):
-		if kill_ghosts() == True:
+		response = world_explodes()
+		if response == True:
 			true_values += 1.0
 		else:
 			false_values += 1.0
@@ -69,6 +124,29 @@ def ghostbusters(iterations):
 		moving_average.append(avg)
 	print "World Explodes {}% of the Time".format(moving_average[-1]*100)
 	y = moving_average
-	x = np.arange(1,iterations+1)
+	x = np.arange(1,iterations)
+	plt.figure(2)
+	plt.plot(x,y)
+
 	return moving_average
 	
+def ghostbusters_discrete(iterations):
+	plt.figure(1)
+	true_values = 0
+	false_values = 0
+	moving_average = []
+	for i in range(1,iterations):
+		response = world_explodes_discrete()
+		if response == True:
+			true_values += 1.0
+		else:
+			false_values += 1.0
+		avg = true_values/i
+		moving_average.append(avg)
+	print "World Explodes {}% of the Time".format(moving_average[-1]*100)
+	y = moving_average
+	x = np.arange(1,iterations)
+	plt.figure(2)
+	plt.plot(x,y)
+
+	return moving_average
