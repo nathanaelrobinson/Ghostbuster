@@ -9,7 +9,6 @@ def campfire():
 	p2 = []
 	p3 = []
 	p4 = []
-	random.shuffle(locations)
 	DA1 = random.random()*360
 	g1 = random.random()*360
 	DA2 = random.random()*360
