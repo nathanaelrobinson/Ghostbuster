@@ -5,7 +5,6 @@ import numpy as np
 import math
 
 def campfire():
-	locations = [0,18,36,54,72,90,108,126,144,162,180,198,216,234,252,270,288,306,324,342]
 	p1 = []
 	p2 = []
 	p3 = []
