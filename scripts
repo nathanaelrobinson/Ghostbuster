@@ -11,10 +11,10 @@ def campfire():
 	p3 = []
 	p4 = []
 	random.shuffle(locations)
-	DA1 = locations.pop()
-	g1 = locations.pop()
-	DA2 = locations.pop()
-	g2 = locations.pop()
+	DA1 = random.random()*360
+	g1 = random.random()*360
+	DA2 = random.random()*360
+	g2 = random.random()*360
 	p1.append(math.cos(math.radians(DA1)))
 	p1.append(math.sin(math.radians(DA1)))
 	p2.append(math.cos(math.radians(g1)))
